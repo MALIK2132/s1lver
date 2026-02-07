@@ -33,6 +33,7 @@ local Tabs = {
     Auras = Window:AddTab("auras", "sparkles"),
     ["UI Settings"] = Window:AddTab("UI Settings", "settings")
 }
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
 local PS = game:GetService("Players")
@@ -45,6 +46,7 @@ local Camera = Workspace.CurrentCamera
 local CE = RS:WaitForChild("CharacterEvents", 10)
 local BeingHeld = Player:WaitForChild("IsHeld", 10)
 local StruggleEvent = CE and CE:WaitForChild("Struggle")
+
 local function notify(title, content, duration)
     Library.Notify({
         Title = title or "Notification",
@@ -52,6 +54,8 @@ local function notify(title, content, duration)
         Time = duration or 5
     })
 end
+
+-- Далее твой остальной код, но уже без ошибок
 local function sendHubLoadedMessage()
 	local message = " Owner Version | S1lver client loaded. "
 	local sent = false
