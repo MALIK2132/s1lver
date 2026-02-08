@@ -1052,63 +1052,6 @@ DefenseExtra:AddToggle("LoopTP", {
 })
 local TargetGroup = Tabs.Target:AddLeftGroupbox("Target Interaction")
 local BlobGroup = Tabs.Target:AddRightGroupbox("Blobman Kick")
-BlobGroup:AddToggle("S1lverBlobKick", {
- Text = "S1lver Blob Kick (HARD)",
- Default = false,
- Callback = function(on)
-  local RunService = game:GetService("RunService")
-  local RS = game:GetService("ReplicatedStorage")
-  local GE = RS:WaitForChild("GrabEvents")
-  local Player = game.Players.LocalPlayer
-
-  local conn
-  if on then
-   if not selectedKickPlayer then
-    notify("S1lver", "Select target first", 3)
-    Toggles.S1lverBlobKick:SetValue(false)
-    return
-   end
-
-   conn = RunService.Heartbeat:Connect(function()
-    local char = Player.Character
-    local hum = char and char:FindFirstChild("Humanoid")
-    local seat = hum and hum.SeatPart
-    if not seat or seat.Parent.Name ~= "CreatureBlobman" then return end
-
-    local blob = seat.Parent
-    local target = selectedKickPlayer
-    if not target or not target.Character then return end
-
-    local tRoot = target.Character:FindFirstChild("HumanoidRootPart")
-    if not tRoot then return end
-
-    -- 🔒 жёсткий NetworkOwner
-    pcall(function()
-     GE.SetNetworkOwner:FireServer(tRoot, CFrame.new(0, 9e5, 0))
-    end)
-
-    -- ☄️ телепорт + фиксация
-    tRoot.CFrame = CFrame.new(
-     math.random(-500,500),
-     900000,
-     math.random(-500,500)
-    )
-
-    tRoot.AssemblyLinearVelocity = Vector3.zero
-    tRoot.AssemblyAngularVelocity = Vector3.zero
-
-    -- ❌ ломаем возврат
-    local humT = target.Character:FindFirstChild("Humanoid")
-    if humT then
-     humT.PlatformStand = true
-     humT.Sit = true
-    end
-   end)
-  else
-   if conn then conn:Disconnect() end
-  end
- end
-})
 local WhitelistGroup = Tabs.Target:AddRightGroupbox("whitelist")
 local selectedKickPlayer = nil
 local kickLoopEnabled = false
@@ -1141,8 +1084,6 @@ TargetGroup:AddDropdown("KickPlayerDropdown", {
 	Text = "select player for kick",
 	Callback = function(Value)
 		selectedKickPlayer = getPlayerFromSelection(Value)
-		print("Value:", Value)
-print("Result:", selectedKickPlayer)
 	end,
 })
 TargetGroup:AddButton({
