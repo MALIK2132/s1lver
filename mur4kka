@@ -11,6 +11,10 @@ local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 local Options = Library.Options
 local Toggles = Library.Toggles
 Library.ForceCheckbox = false
+local s = Instance.new("Sound", game:GetService("SoundService"))
+s.SoundId = "rbxassetid://7142730101"
+s.Volume = 5
+s:Play()
 local Window = Library:CreateWindow({
 	Title = "mur4kka",
 	Footer = "mur4kka",
@@ -1734,320 +1738,319 @@ TargetGroup:AddToggle("EnableRagdollTarget", {
     end,
 })
 TargetGroup:AddToggle("LoopKickGrabToggle", {
-    Text = "lock (spam grab)",
-    Default = false,
-    Callback = function(on)
-        kickLoopEnabled = on
-        if not on then return end
+    Text = "KICK (ULTIMATE LOCK - NO ESCAPE)",
+Default = false,
 
-        task.spawn(function()
-            local RS = game:GetService("ReplicatedStorage")
-            local RunService = game:GetService("RunService")
-            local Players = game:GetService("Players")
-            local Player = Players.LocalPlayer
-            local GE = RS:WaitForChild("GrabEvents")
-            
-            local myChar = Player.Character
-            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            if not myRoot then 
-                Toggles.LoopKickGrabToggle:SetValue(false)
-                return 
-            end
+Callback = function(on)
+    _G.kickLoopEnabled = on
+    if not on then 
+        local myChar = game.Players.LocalPlayer.Character
+        if myChar and myChar:FindFirstChild("KickShield") then
+            myChar.KickShield:Destroy()
+        end
+        return 
+    end
 
-            -- [[ THE LOCK ]]
-            local savedPos = myRoot.CFrame
-            local dragging = false
-            local grabStartTime = 0
-            local holdHeight = 17 
+    task.spawn(function()
+        local RS = game:GetService("ReplicatedStorage")
+        local RunService = game:GetService("RunService")
+        local Players = game:GetService("Players")
+        local LPlayer = Players.LocalPlayer
+        
+        local GE = RS:WaitForChild("GrabEvents", 5)
+        local CE = RS:WaitForChild("CharacterEvents", 5)
 
-            while kickLoopEnabled do
-                local target = selectedKickPlayer
-                if not target or not target.Parent or not target.Character then break end
-                
-                local tChar = target.Character
-                local tRoot = tChar:FindFirstChild("HumanoidRootPart")
-                local tHum = tChar:FindFirstChild("Humanoid")
+        if not GE or not CE then return end
 
-                if tRoot and tHum and tHum.Health > 0 then
-                    if not dragging then
-                        -- PHASE 1: THE TELEPORT GRAB
-                        myRoot.CFrame = tRoot.CFrame
-                        
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = true
-                            GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
+        local myChar = LPlayer.Character
+        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+        if not myRoot then return end
 
-                        if grabStartTime == 0 then grabStartTime = tick() end
-                        if tick() - grabStartTime > 0.6 then
-                            dragging = true
-                        end
-                    else
-                        -- PHASE 2: STATIC LOCK (NO SHAKE)
-                        myRoot.CFrame = savedPos
-                        myRoot.AssemblyLinearVelocity = Vector3.zero
-                        
-                        -- Removed the randomAngle logic to prevent shaking
-                        local lockCFrame = savedPos * CFrame.new(0, holdHeight, 0)
-                        tRoot.CFrame = lockCFrame
-                        
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = false 
-                            GE.SetNetworkOwner:FireServer(tRoot, lockCFrame)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
+        -- Защита, чтобы тебя не трогали
+        local ff = Instance.new("ForceField")
+        ff.Name = "KickShield"
+        ff.Visible = false
+        ff.Parent = myChar
+
+        local originalPos = myRoot.CFrame 
+        local dragging = false
+        local grabStartTime = 0
+
+        -- Основной цикл
+        while _G.kickLoopEnabled do
+            local target = selectedKickPlayer 
+            local tChar = target and target.Character
+            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+            local tHum = tChar and tChar:FindFirstChild("Humanoid")
+
+            if tRoot and tHum and tHum.Health > 0 then
+                -- Позиция высоко в небе (100 блоков вверх)
+                local freezePos = originalPos * CFrame.new(0, 20, 0)
+
+                if not dragging then
+                    -- ФАЗА ЗАХВАТА: Летим к нему
+                    myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 1)
+                    pcall(function()
+                        GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                    end)
+
+                    if grabStartTime == 0 then grabStartTime = tick() end
+                    if tick() - grabStartTime > 0.1 then -- Мгновенный захват
+                        dragging = true 
+                        grabStartTime = 0 
                     end
                 else
-                    dragging = false
-                    grabStartTime = 0
-                end
-                
-                RunService.Heartbeat:Wait()
-            end
-
-            -- [[ CLEANUP ]]
-            if myRoot then myRoot.CFrame = savedPos end
-            
-            local target = selectedKickPlayer
-            if target and target.Character then
-                local tRoot = target.Character:FindFirstChild("HumanoidRootPart")
-                if tRoot then
-                    pcall(function()
-                        GE.DestroyGrabLine:FireServer(tRoot)
-                    end)
-                end
-            end
-            
-            dragging = false
-            kickLoopEnabled = false
-            Toggles.LoopKickGrabToggle:SetValue(false)
-        end)
-    end
-})
-TargetGroup:AddToggle("LoopKickGrabToggle", {
-    Text = "lock (Ragdoll grab)",
-    Default = false,
-    Callback = function(on)
-        kickLoopEnabled = on
-        if not on then return end
-
-        task.spawn(function()
-            local RS = game:GetService("ReplicatedStorage")
-            local RunService = game:GetService("RunService")
-            local Players = game:GetService("Players")
-            local Player = Players.LocalPlayer
-            local GE = RS:WaitForChild("GrabEvents")
-            
-            local myChar = Player.Character
-            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            if not myRoot then 
-                Toggles.LoopKickGrabToggle:SetValue(false)
-                return 
-            end
-
-            -- [[ THE LOCK ]]
-            local savedPos = myRoot.CFrame
-            local dragging = false
-            local grabStartTime = 0
-            local holdHeight = 17 
-
-            while kickLoopEnabled do
-                local target = selectedKickPlayer
-                if not target or not target.Parent or not target.Character then break end
-                
-                local tChar = target.Character
-                local tRoot = tChar:FindFirstChild("HumanoidRootPart")
-                local tHum = tChar:FindFirstChild("Humanoid")
-
-                if tRoot and tHum and tHum.Health > 0 then
-                    if not dragging then
-                        -- PHASE 1: THE TELEPORT GRAB
-                        -- You must touch them for a split second to start the grab
-                        myRoot.CFrame = tRoot.CFrame
-                        
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = true
-                            GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
-
-                        if grabStartTime == 0 then grabStartTime = tick() end
-                        -- 0.6s is the "sweet spot" for high ping to register the grab
-                        if tick() - grabStartTime > 0.6 then
-                            dragging = true
-                        end
-                    else
-                        -- PHASE 2: THE SIMULTANEOUS LOCK & KICK
-                        -- Teleport YOU back to your starting spot
-                        myRoot.CFrame = savedPos
-                        myRoot.AssemblyLinearVelocity = Vector3.zero
-                        
-                        -- THE KICK: Your random angle jitter logic
-                        local randomAngle = CFrame.Angles(
-                            math.rad(math.random(-180, 180)),
-                            math.rad(math.random(-180, 180)),
-                            math.rad(math.random(-180, 180))
-                        )
-                        
-                        -- TELEPORT THEM: Force them 17 studs above your lock
-                        local lockCFrame = (savedPos * CFrame.new(0, holdHeight, 0)) * randomAngle
-                        tRoot.CFrame = lockCFrame
-                        
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = false -- Set to false for the "Kick" ragdoll effect
-                            GE.SetNetworkOwner:FireServer(tRoot, lockCFrame)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
-                    end
-                else
-                    dragging = false
-                    grabStartTime = 0
-                end
-                
-                RunService.Heartbeat:Wait()
-            end
-
-            -- [[ CLEANUP ]]
-            -- When you turn it off, they just drop where they are. No throwing.
-            if myRoot then myRoot.CFrame = savedPos end
-            
-            local target = selectedKickPlayer
-            if target and target.Character then
-                local tRoot = target.Character:FindFirstChild("HumanoidRootPart")
-                if tRoot then
-                    pcall(function()
-                        GE.DestroyGrabLine:FireServer(tRoot)
-                    end)
-                end
-            end
-            
-            dragging = false
-            kickLoopEnabled = false
-            Toggles.LoopKickGrabToggle:SetValue(false)
-        end)
-    end
-})
-TargetGroup:AddToggle("LoopKickGrabToggle", {
-    Text = "kick (spam grab + move)",
-    Default = false,
-
-    Callback = function(on)
-        kickLoopEnabled = on
-        if not on then return end
-
-        task.spawn(function()
-            local GE = ReplicatedStorage:WaitForChild("GrabEvents")
-            
-            local myChar = Player.Character
-            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            
-            -- [1] SAVE YOUR STARTING SPOT (Where you want to bring the player)
-            local originalPos = myRoot and myRoot.CFrame 
-
-            local dragging = false
-            local grabStartTime = 0
-            local kickTick = 0
-
-            while kickLoopEnabled do
-                myChar = Player.Character
-                myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-                if not myRoot then break end
-
-                local target = selectedKickPlayer
-                local tChar = target and target.Character
-                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-                local tHum = tChar and tChar:FindFirstChild("Humanoid")
-
-                if tRoot and tHum and tHum.Health > 0 then
+                    -- ФАЗА МЕРТВОЙ ФИКСАЦИИ
+                    myRoot.CFrame = originalPos -- Ты на месте
                     
-                    -- Position where the target will float (relative to you)
-                    local followPos = myRoot.CFrame * CFrame.new(0, 17, 0)
+                    -- Принудительное удержание позиции (Анти-прыжок / Анти-побег)
+                    -- Используем Stepped для максимальной скорости возврата
+                    tRoot.CFrame = freezePos
+                    tRoot.AssemblyLinearVelocity = Vector3.zero
+                    tRoot.AssemblyAngularVelocity = Vector3.zero
+                    
+                    -- Спам сетевых событий и Ragdoll, чтобы сломать управление игроку
+                    pcall(function()
+                        -- Перехватываем владение физикой тела цели
+                        GE.SetNetworkOwner:FireServer(tRoot, freezePos)
+                        
+                        -- Обнуляем состояние персонажа (чтобы не прыгал)
+                        CE.RagdollRemote:FireServer(tRoot, 0)
+                        
+                        -- Если он нажал "Сбежать" или прыгнул, линия обновится мгновенно
+                        GE.DestroyGrabLine:FireServer(tRoot)
+                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                        
+                        -- Контрим встроенную функцию побега
+                        if GE:FindFirstChild("Struggle") then
+                            GE.Struggle:FireServer()
+                        end
+                    end)
+                end
+            else
+                dragging = false
+                grabStartTime = 0
+            end
 
-                    if not dragging then
-                        -- [2] GO TO THE TARGET TO GRAB THEM
-                        myRoot.CFrame = tRoot.CFrame * CFrame.new(0, -2.5, 0)
+            -- Ждем минимально возможное время (кадр физики)
+            RunService.Stepped:Wait()
+        end
 
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = true
-                            GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
+        if ff then ff:Destroy() end
+        if originalPos and myRoot then
+            myRoot.CFrame = originalPos
+        end
+    end)
+end
+})
+TargetGroup:AddToggle("RagdollKickToggle", {
+Text = "Kick (Top Ragdoll + Stabilized)",
+Default = false,
 
-                        if grabStartTime == 0 then
-                            grabStartTime = tick()
+Callback = function(on)
+    kickLoopEnabled = on
+    if not on then return end
+
+    task.spawn(function()
+        local GE = game:GetService("ReplicatedStorage"):WaitForChild("GrabEvents")
+        local CE = game:GetService("ReplicatedStorage"):WaitForChild("CharacterEvents")
+        local RunService = game:GetService("RunService")
+        local Player = game.Players.LocalPlayer
+        
+        local originalPos = nil
+        local dragging = false
+        local grabStartTime = 0
+        local syncTick = 0
+
+        while kickLoopEnabled do
+            local myChar = Player.Character
+            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+            
+            if not myRoot then 
+                RunService.Heartbeat:Wait()
+                continue 
+            end
+
+            -- Сохраняем твою позицию как якорь
+            if not originalPos then originalPos = myRoot.CFrame end
+
+            local target = selectedKickPlayer
+            local tChar = target and target.Character
+            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+            local tHum = tChar and tChar:FindFirstChild("Humanoid")
+
+            if tRoot and tHum and tHum.Health > 0 then
+                -- ПОЗИЦИЯ: Ровно над тобой (на 12 блоков вверх)
+                local topPos = myRoot.CFrame * CFrame.new(0, 12, 0)
+
+                if not dragging then
+                    -- ФАЗА ЗАХВАТА
+                    myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
+                    pcall(function()
+                        tHum.PlatformStand = true
+                        GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+                    end)
+
+                    if grabStartTime == 0 then grabStartTime = tick() end
+                    if tick() - grabStartTime > 0.2 then 
+                        dragging = true
+                        grabStartTime = 0
+                    end
+                else
+                    -- ФАЗА УДЕРЖАНИЯ НАВЕРХУ
+                    -- Ты стоишь на месте якоря
+                    myRoot.CFrame = originalPos
+                    myRoot.AssemblyLinearVelocity = Vector3.zero
+
+                    -- Удержание цели наверху
+                    tRoot.CFrame = topPos
+                    
+                    -- СТАБИЛИЗАЦИЯ (чтобы не разлетался)
+                    tRoot.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                    tRoot.AssemblyAngularVelocity = Vector3.new(0, 0, 0) 
+
+                    pcall(function()
+                        -- Принудительный Ragdoll
+                        tHum.PlatformStand = true
+                        tHum.Sit = false -- Садиться нельзя, иначе рагдолл пропадет
+                        if tHum:GetState() ~= Enum.HumanoidStateType.FallingDown then
+                            tHum:ChangeState(Enum.HumanoidStateType.FallingDown)
                         end
 
-                        -- [3] ONCE GRABBED: TELEPORT BOTH BACK
-                        if tick() - grabStartTime > 0.18 then
-                            dragging = true
-                            grabStartTime = 0
+                        -- Спам серверных событий для удержания
+                        if tick() - syncTick > 0.05 then
+                            syncTick = tick()
                             
-                            -- Snap yourself back to original spot
-                            if originalPos then
-                                myRoot.CFrame = originalPos
-                                -- Snap the target to your new (original) position immediately
-                                tRoot.CFrame = originalPos * CFrame.new(0, 17, 0)
+                            -- Удаленный вызов рагдолла (если есть в игре)
+                            if CE:FindFirstChild("RagdollRemote") then
+                                CE.RagdollRemote:FireServer(tRoot, 1)
+                            end
+
+                            -- Обновляем владение сетью на позицию над головой
+                            GE.SetNetworkOwner:FireServer(tRoot, topPos)
+                            
+                            -- Спам захвата (Struggle / GrabLine)
+                            GE.DestroyGrabLine:FireServer(tRoot)
+                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                            
+                            if GE:FindFirstChild("Struggle") then
+                                GE.Struggle:FireServer()
                             end
                         end
-                    else
-                        -- [4] KEEP THEM FLOATING AT YOUR ORIGINAL SPOT
-                        tRoot.CFrame = tRoot.CFrame:Lerp(followPos, 0.6)
-                        tRoot.AssemblyLinearVelocity = Vector3.zero
-                        tRoot.AssemblyAngularVelocity = Vector3.zero
+                    end)
+                end
+            else
+                dragging = false
+                grabStartTime = 0
+            end
 
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            -- Force network ownership to keep them stuck to your position
-                            GE.SetNetworkOwner:FireServer(tRoot, followPos)
-                        end)
+            RunService.Heartbeat:Wait()
+        end
 
-                        -- Kick/Grab Line Loop
-                        if tick() - kickTick > 0.05 then
-                            kickTick = tick()
-                            pcall(function()
-                                GE.DestroyGrabLine:FireServer(tRoot)
-                            end)
-                            task.wait(0.01)
-                            pcall(function()
-                                GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                            end)
-                        end
+        -- Очистка при выключении: возвращаем тебя на землю
+        if originalPos and myRoot then
+            myRoot.CFrame = originalPos
+        end
+    end)
+end
+})
+TargetGroup:AddToggle("LoopKickGrabToggle", {
+    Text = "KICK (ULTRA-GOD-LOCK)",
+Default = false,
+
+Callback = function(on)
+    _G.kickLoopEnabled = on
+    if not on then return end
+
+    task.spawn(function()
+        local RS = game:GetService("ReplicatedStorage")
+        local RunService = game:GetService("RunService")
+        local Players = game:GetService("Players")
+        local LPlayer = Players.LocalPlayer
+        
+        local GE = RS:WaitForChild("GrabEvents", 5)
+        local CE = RS:WaitForChild("CharacterEvents", 5)
+
+        if not GE or not CE then return end
+
+        local myChar = LPlayer.Character
+        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+        if not myRoot then return end
+
+        local originalPos = myRoot.CFrame 
+        local dragging = false
+        local grabStartTime = 0
+
+        while _G.kickLoopEnabled do
+            local target = selectedKickPlayer 
+            local tChar = target and target.Character
+            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+            local tHum = tChar and tChar:FindFirstChild("Humanoid")
+
+            if tRoot and tHum and tHum.Health > 0 then
+                -- Фиксируем высоту 20
+                local freezePos = originalPos * CFrame.new(0, 20, 0)
+
+                if not dragging then
+                    -- МГНОВЕННЫЙ ЗАХВАТ
+                    myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 0.5)
+                    
+                    pcall(function()
+                        CE.RagdollRemote:FireServer(tRoot, math.huge)
+                        GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                    end)
+
+                    if grabStartTime == 0 then grabStartTime = tick() end
+                    if tick() - grabStartTime > 0.3 then 
+                        dragging = true 
+                        grabStartTime = 0 
                     end
                 else
-                    dragging = false
-                    grabStartTime = 0
-                end
+                    -- ФАЗА "МЕРТВОЙ" ПЕРЕГРУЗКИ
+                    myRoot.CFrame = originalPos
+                    
+                    -- Удерживаем цель в одной точке, отключая инерцию
+                    tRoot.CFrame = freezePos
+                    tRoot.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                    tRoot.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
 
-                RunService.Heartbeat:Wait()
-            end
-
-            -- [CLEANUP]
-            pcall(function()
-                if selectedKickPlayer and selectedKickPlayer.Character then
-                    local targetRoot = selectedKickPlayer.Character:FindFirstChild("HumanoidRootPart")
-                    if targetRoot then
-                        GE.DestroyGrabLine:FireServer(targetRoot)
+                    -- МОЩНЕЙШИЙ СПАМ (15 пакетов за кадр)
+                    for i = 1, 15 do 
+                        pcall(function()
+                            -- Спамим Ragdoll (чтобы он не мог выйти из анимации падения)
+                            CE.RagdollRemote:FireServer(tRoot, 0.1)
+                            
+                            -- Спам захвата/отпускания (основная причина вылета)
+                            GE.DestroyGrabLine:FireServer(tRoot)
+                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                            
+                            -- Постоянное переназначение владельца (дергает камеру жертвы)
+                            GE.SetNetworkOwner:FireServer(tRoot, freezePos)
+                            
+                            -- Если есть ивент Struggle - спамим его для лагов
+                            if GE:FindFirstChild("Struggle") then
+                                GE.Struggle:FireServer()
+                            end
+                        end)
                     end
                 end
-            end)
-
-            -- Ensure you are back home if the loop ends
-            if originalPos and myRoot then
-                myRoot.CFrame = originalPos
+            else
+                dragging = false
+                grabStartTime = 0
             end
 
-            kickLoopEnabled = false
-            if Toggles and Toggles.LoopKickGrabToggle then
-                Toggles.LoopKickGrabToggle:SetValue(false)
-            end
-        end)
-    end
+            -- Используем RenderStepped для максимальной скорости (1ms)
+            RunService.RenderStepped:Wait()
+        end
+
+        -- Возврат на место при выключении
+        if myRoot and originalPos then
+            myRoot.CFrame = originalPos
+        end
+    end)
+end
 })
 
 TargetGroup:AddToggle("ApplyMethodGrab", {
@@ -2220,127 +2223,108 @@ TargetGroup:AddToggle("ApplyMethodGrab", {
 })
 
 TargetGroup:AddToggle("LoopKickGrabToggle", {
-    Text = "kick (spam grab + freeze)",
-    Default = false,
+    Text = "kick (spam grab + freeze + ragdoll)",
+Default = false,
 
-    Callback = function(on)
-        kickLoopEnabled = on
-        if not on then return end
+Callback = function(on)
+    _G.kickLoopEnabled = on
+    if not on then return end
 
-        task.spawn(function()
-            local GE = ReplicatedStorage:WaitForChild("GrabEvents")
-            local RunService = game:GetService("RunService")
-            
-            local myChar = Player.Character
-            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            
-            -- [1] SAVE STARTING POSITION (THE ANCHOR)
-            local originalPos = myRoot and myRoot.CFrame 
+    task.spawn(function()
+        -- Определяем сервисы прямо внутри, чтобы избежать ошибок доступа
+        local RS = game:GetService("ReplicatedStorage")
+        local RunService = game:GetService("RunService")
+        local Players = game:GetService("Players")
+        local LPlayer = Players.LocalPlayer
+        
+        local GE = RS:WaitForChild("GrabEvents", 5)
+        local CE = RS:WaitForChild("CharacterEvents", 5)
 
-            local dragging = false
-            local grabStartTime = 0
-            local kickTick = 0
+        if not GE or not CE then 
+            warn("Karka Client: Не найдены GrabEvents или CharacterEvents!")
+            return 
+        end
 
-            while kickLoopEnabled do
-                myChar = Player.Character
-                myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-                if not myRoot then break end
+        local myChar = LPlayer.Character
+        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+        if not myRoot then return end
 
-                local target = selectedKickPlayer
-                local tChar = target and target.Character
-                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-                local tHum = tChar and tChar:FindFirstChild("Humanoid")
+        -- Сохраняем позицию якоря
+        local originalPos = myRoot.CFrame 
+        local dragging = false
+        local grabStartTime = 0
+        local kickTick = 0
 
-                if tRoot and tHum and tHum.Health > 0 then
+        while _G.kickLoopEnabled do
+            local target = selectedKickPlayer -- Проверь, что эта переменная выбрана в твоем Dropdown
+            local tChar = target and target.Character
+            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+            local tHum = tChar and tChar:FindFirstChild("Humanoid")
+
+            if tRoot and tHum and tHum.Health > 0 then
+                -- Позиция заморозки: на 20 блоков выше твоего изначального места
+                local freezePos = originalPos * CFrame.new(0, 20, 0)
+
+                if not dragging then
+                    -- ФАЗА ЗАХВАТА
+                    myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 1)
                     
-                    -- Freeze position: high enough to be away from floor physics
-                    local freezePos = originalPos * CFrame.new(0, 18, 0)
+                    pcall(function()
+                        tHum.PlatformStand = true
+                        -- РАГДОЛЛ (моментальный)
+                        CE.RagdollRemote:FireServer(tRoot, 0)
+                        GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                    end)
 
-                    if not dragging then
-                        -- [2] EXTENDED GRAB PHASE (STAY ON PLAYER)
-                        -- Glue yourself to the target for 0.6 seconds
-                        myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 1) 
-                        myRoot.AssemblyLinearVelocity = Vector3.zero
-
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = true
-                            GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
-
-                        if grabStartTime == 0 then
-                            grabStartTime = tick()
-                        end
-
-                        if tick() - grabStartTime > 0.6 then 
-                            dragging = true
-                            grabStartTime = 0
-                        end
-                    else
-                        -- [3] STRONGER FREEZE LOCK
-                        -- Keep your character stuck at the original spot
-                        if originalPos then
-                            myRoot.CFrame = originalPos 
-                            myRoot.AssemblyLinearVelocity = Vector3.zero
-                        end
-                        
-                        -- FORCE target to stay at freeze coordinates
-                        tRoot.CFrame = freezePos 
-                        tRoot.AssemblyLinearVelocity = Vector3.zero
-                        tRoot.AssemblyAngularVelocity = Vector3.zero
-
-                        pcall(function()
-                            -- Force states that disable physics/movement
-                            tHum.PlatformStand = true
-                            tHum.Sit = true
-                            -- Constantly claim ownership at the exact freeze spot
-                            GE.SetNetworkOwner:FireServer(tRoot, freezePos)
-                        end)
-
-                        -- Fast Kick/Grab Line Spam
-                        if tick() - kickTick > 0.03 then 
-                            kickTick = tick()
-                            pcall(function()
-                                GE.DestroyGrabLine:FireServer(tRoot)
-                            end)
-                            task.wait(0.00001)
-                            pcall(function()
-                                GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                            end)
-                        end
+                    if grabStartTime == 0 then grabStartTime = tick() end
+                    if tick() - grabStartTime > 0.4 then 
+                        dragging = true 
+                        grabStartTime = 0 
                     end
                 else
-                    -- Reset if the player leaves or dies
-                    dragging = false
-                    grabStartTime = 0
-                end
+                    -- ФАЗА ФИКСАЦИИ (НАМЕРТВО СВЕРХУ)
+                    myRoot.CFrame = originalPos
+                    myRoot.AssemblyLinearVelocity = Vector3.zero
+                    
+                    -- Телепортируем цель и обнуляем физику
+                    tRoot.CFrame = freezePos
+                    tRoot.AssemblyLinearVelocity = Vector3.zero
+                    tRoot.AssemblyAngularVelocity = Vector3.zero
 
-                RunService.Heartbeat:Wait()
-            end
+                    pcall(function()
+                        tHum.PlatformStand = true
+                        -- Повторяем рагдолл, чтобы не встал
+                        CE.RagdollRemote:FireServer(tRoot, 0)
+                        GE.SetNetworkOwner:FireServer(tRoot, freezePos)
+                    end)
 
-            -- [CLEANUP]
-            pcall(function()
-                if selectedKickPlayer and selectedKickPlayer.Character then
-                    local targetRoot = selectedKickPlayer.Character:FindFirstChild("HumanoidRootPart")
-                    if targetRoot then
-                        GE.DestroyGrabLine:FireServer(targetRoot)
+                    -- Спам захвата (Kick Spam)
+                    if tick() - kickTick > 0.02 then 
+                        kickTick = tick()
+                        pcall(function()
+                            GE.DestroyGrabLine:FireServer(tRoot)
+                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                            if GE:FindFirstChild("Struggle") then
+                                GE.Struggle:FireServer()
+                            end
+                        end)
                     end
                 end
-            end)
-
-            -- Return to your original spot when finished
-            if originalPos and myRoot then
-                myRoot.CFrame = originalPos
-                myRoot.AssemblyLinearVelocity = Vector3.zero
+            else
+                dragging = false
+                grabStartTime = 0
             end
 
-            kickLoopEnabled = false
-            if Toggles and Toggles.LoopKickGrabToggle then
-                Toggles.LoopKickGrabToggle:SetValue(false)
-            end
-        end)
-    end
+            RunService.Heartbeat:Wait()
+        end
+
+        -- Очистка после выключения
+        if originalPos then
+            myRoot.CFrame = originalPos
+        end
+    end)
+end
 })
 TargetGroup:AddToggle("DarkMatterKick", {
     Text = "Bomb Dark Matter",
@@ -4569,6 +4553,7 @@ local selectedKey = Enum.KeyCode.Q
 -- WORKING ANIMATIONS ONLY
 -- =========================
 local Animations = {
+	["Crazy"]    = "rbxassetid://248263260",
 	["Crazy"]    = "rbxassetid://248263260",
 	["Insane"]   = "rbxassetid://35654637",
 	["Collapse"] = "rbxassetid://35154961",
