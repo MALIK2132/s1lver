@@ -15,7 +15,7 @@ task.spawn(function()
     -- Создаем звук
     local sound = Instance.new("Sound")
     -- Я подобрал 3 максимально стабильных ID. Попробуй сначала этот:
-    sound.SoundId = "rbxassetid://138420499694743" -- Классический "Sparkle/Magic" звук, он обычно везде разрешен
+    sound.SoundId = "rbxassetid://" -- Классический "Sparkle/Magic" звук, он обычно везде разрешен
     sound.Volume = 0.5 -- На максимум
     sound.Parent = soundParent
     
@@ -41,7 +41,7 @@ task.spawn(function()
     txt.Position = UDim2.new(0.5, 0, 0.47, 0)
     txt.AnchorPoint = Vector2.new(0.5, 0.47)
     txt.BackgroundTransparency = 1
-    txt.Text = "I Love you kara 😘"
+    txt.Text = ""
     txt.TextColor3 = Color3.fromRGB(255, 105, 180)
     txt.TextSize = 76
     txt.Font = Enum.Font.GothamBold
