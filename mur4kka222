@@ -790,6 +790,67 @@ DefenseGroup:AddToggle("AntiLagToggle", {
 	end,
 })
 DefenseGroup:AddButton({
+    Text = "Teleport",
+    Func = function()
+        -- Если кнопка уже создана, не создаем вторую
+        if game:GetService("CoreGui"):FindFirstChild("MobileTP_System") then 
+            Library:Notify("Кнопка ТП уже на экране!", 2)
+            return 
+        end
+
+        local Player = game:GetService("Players").LocalPlayer
+        local Camera = workspace.CurrentCamera
+        local tpEnabled = true
+
+        -- 1. Создаем интерфейс кнопки
+        local ScreenGui = Instance.new("ScreenGui")
+        ScreenGui.Name = "MobileTP_System"
+        ScreenGui.Parent = game:GetService("CoreGui")
+        ScreenGui.ResetOnSpawn = false
+
+        local TPButton = Instance.new("TextButton")
+        TPButton.Name = "TeleportButton"
+        TPButton.Parent = ScreenGui
+        TPButton.Size = UDim2.new(0, 120, 0, 50)
+        TPButton.Position = UDim2.new(0.5, -60, 0.8, 0)
+        TPButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        TPButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TPButton.Text = "TELEPORT"
+        TPButton.Font = Enum.Font.SourceSansBold
+        TPButton.TextSize = 20
+        TPButton.Active = true
+        TPButton.Draggable = true 
+
+        local ButtonCorner = Instance.new("UICorner")
+        ButtonCorner.CornerRadius = UDim.new(0, 10)
+        ButtonCorner.Parent = TPButton
+
+        -- Логика ТП при нажатии на появившуюся кнопку
+        TPButton.MouseButton1Click:Connect(function()
+            local character = Player.Character
+            local hrp = character and character:FindFirstChild("HumanoidRootPart")
+            
+            if hrp then
+                local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                local unitRay = Camera:ViewportPointToRay(screenCenter.X, screenCenter.Y)
+                
+                local raycastParams = RaycastParams.new()
+                raycastParams.FilterDescendantsInstances = {character}
+                
+                local result = workspace:Raycast(unitRay.Origin, unitRay.Direction * 1000, raycastParams)
+                
+                if result then
+                    hrp.CFrame = CFrame.new(result.Position + Vector3.new(0, 3, 0))
+                end
+            end
+        end)
+
+        Library:Notify("Кнопка телепорта появилась на экране!", 3)
+    end,
+    DoubleClick = false,
+    Tooltip = "Нажми, чтобы на экране появилась кнопка для ТП"
+})
+DefenseGroup:AddButton({
     Text = "Sequential Double-Reset",
     Func = function()
         local lp = game:GetService("Players").LocalPlayer
@@ -1464,7 +1525,7 @@ BlobGroup:AddToggle("mur4kkaBwlobKickToggle", {
 })
 -- Combined Toggle for mur4kka blob kick
 BlobGroup:AddToggle("mur4kkaBlobKickToggle", {
-    Text = "mur4kka Blob Kick",
+    Text = "mur4kka Blob Kick)",
     Default = false,
     Callback = function(on)
         kickLoopEnabled = on
