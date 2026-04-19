@@ -1464,7 +1464,7 @@ BlobGroup:AddToggle("mur4kkaBwlobKickToggle", {
 })
 -- Combined Toggle for mur4kka blob kick
 BlobGroup:AddToggle("mur4kkaBlobKickToggle", {
-    Text = "mur4kka Blob Kick)",
+    Text = "mur4kka Blob Kick",
     Default = false,
     Callback = function(on)
         kickLoopEnabled = on
