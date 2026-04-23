@@ -1838,134 +1838,52 @@ TargetGroup:AddToggle("EnableRagdollTarget", {
         end
     end,
 })
-TargetGroup:AddToggle("LoopKickGrabToggle", {
-    Text = "тест ",
+TargetGroup:AddToggle("RagdollKickToggle", {
+Text = "Loop Kill",
 Default = false,
 Callback = function(v)
-    _G.applymethod = v
-    local kickbp, kickbg
+    _G.loopkill = v
     if not v then return end
-    
+
     task.spawn(function()
         local RS = game:GetService("ReplicatedStorage")
         local RunService = game:GetService("RunService")
-        local GE = RS:WaitForChild("GrabEvents")
-        local SetNetOwner = GE:WaitForChild("SetNetworkOwner")
-        local DestroyLine = GE:WaitForChild("DestroyGrabLine")
-        local MenuToys = RS:WaitForChild("MenuToys")
-        local SpawnRemote = MenuToys:WaitForChild("SpawnToyRemoteFunction")
-        local DestroyToy = MenuToys:WaitForChild("DestroyToy")
+        local LocalPlayer = game:GetService("Players").LocalPlayer
+        local SetNetOwner = RS:WaitForChild("GrabEvents"):WaitForChild("SetNetworkOwner")
+
+        while _G.loopkill and RunService.Heartbeat:Wait() do
+            local target = selectedKickPlayer
+            if not target or not target.Character then continue end
+
+            local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local tChar = target.Character
+            local tHRP = tChar:FindFirstChild("HumanoidRootPart")
+            local tHum = tChar:FindFirstChild("Humanoid")
+
+            if myHRP and tHRP and tHum and tHum.Health > 0 then
+                local oldPos = myHRP.CFrame
+                
+                -- 1. Скрытый прыжок (на 0.03 сек)
+                myHRP.CFrame = tHRP.CFrame
+                
+                -- 2. Захват и моментальная "деактивация" цели
+                pcall(function()
+                    SetNetOwner:FireServer(tHRP, tHRP.CFrame)
+                    -- Ломаем стейт: игрок больше не контролирует своего персонажа
+                    tHum.PlatformStand = true 
+                end)
+
+                -- 3. Обман движка:
+                -- Мы не кидаем его далеко (чтобы не сработал анти-чит),
+                -- а просто проваливаем его чуть ниже уровня пола и убиваем
+                tHRP.CFrame = tHRP.CFrame * CFrame.new(0, -9999, 0)
+                tHum.Health = 0 -- Теперь, когда Ownership у нас, это сработает мгновенно
+
+                -- 5. Мгновенно возвращаемся
+                myHRP.CFrame = oldPos
         
-        local verticalDistance = 20 
-        local offsetVec = Vector3.new(0, verticalDistance, 0)
-
-        while _G.applymethod and RunService.RenderStepped:Wait() do
-            local tt = selectedKickPlayer
-            if not tt then continue end
-            
-            local myChar = LocalPlayer.Character
-            local HRP = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            local hum = myChar and myChar:FindFirstChild("Humanoid")
-            if not HRP or not hum then continue end
-
-            local oldPos = HRP.CFrame -- Точка возврата
-            local tChar = tt.Character
-            local tHRP = tChar and tChar:FindFirstChild("HumanoidRootPart")
-            
-            if tChar and tHRP then
-                local inv = workspace:FindFirstChild(LocalPlayer.Name .. "SpawnedInToys") or workspace:FindFirstChild(LocalPlayer.Name .. " SpawnedInToys")
-                
-                -- Если цель еще не захвачена
-                if tChar.Parent == workspace and not tHRP:FindFirstChild("BodyPosition") then
-                    -- МГНОВЕННЫЙ ЗАХВАТ
-                    local targetCF = tHRP.CFrame
-                    HRP.CFrame = targetCF * CFrame.new(0, 0, 2) -- Теп к нему
-                    
-                    local blob = inv and inv:FindFirstChild("CreatureBlobman")
-                    if not blob then
-                        pcall(function() SpawnRemote:InvokeServer("CreatureBlobman", targetCF, Vector3.zero) end)
-                        task.wait(0.2) -- Минимальная задержка
-                        blob = inv and inv:FindFirstChild("CreatureBlobman")
-                    end
-                    
-                    if blob and blob:FindFirstChild("VehicleSeat") then
-                        blob.Name = "cringe"
-                        -- Быстрая посадка
-                        pcall(function() blob.VehicleSeat:Sit(hum) end)
-                        
-                        local scriptObj = blob:FindFirstChild("BlobmanSeatAndOwnerScript")
-                        if scriptObj then
-                            local CG = scriptObj:FindFirstChild("CreatureGrab")
-                            local CD = scriptObj:FindFirstChild("CreatureRelease") or scriptObj:FindFirstChild("CreatureDrop")
-                            
-                            if CG and CD then
-                                local rDetector = blob:FindFirstChild("RightDetector")
-                                local t_start = tick()
-                                repeat
-                                    task.wait()
-                                    local rWeld = rDetector and (rDetector:FindFirstChild("RightWeld") or rDetector:FindFirstChildWhichIsA("Weld"))
-                                    if rWeld then
-                                        pcall(function() CG:FireServer(rDetector, tHRP, rWeld) end)
-                                        pcall(function() CD:FireServer(rWeld) end)
-                                    end
-                                until (tick() - t_start > 0.5) -- Сократил время для быстроты
-                            end
-                        end
-                    end
-                    -- ПРИНУДИТЕЛЬНЫЙ ВОЗВРАТ
-                    HRP.CFrame = oldPos
-                    pcall(function() DestroyToy:FireServer(inv:FindFirstChild("cringe")) end)
-                end
-                
-                -- ЛОГИКА КИКА (УДЕРЖАНИЕ И РАГДОЛЛ)
-                if tHRP and HRP then
-                    -- Смена владельца сети (чтобы его не телепортировало назад)
-                    pcall(function()
-                        SetNetOwner:FireServer(tHRP, tHRP.CFrame)
-                        DestroyLine:FireServer(tHRP)
-                    end)
-
-                    -- Усиленный рагдолл (Невидимая палетка)
-                    if Toggles.EnableRagdollTarget and Toggles.EnableRagdollTarget.Value then
-                        local pallet = getgenv().PalletForRagdoll
-                        if pallet and pallet:FindFirstChild("SoundPart") then
-                            pallet.SoundPart.Transparency = 1
-                            if pallet.SoundPart:FindFirstChildOfClass("SelectionBox") then pallet.SoundPart:FindFirstChildOfClass("SelectionBox").Visible = false end
-                            
-                            -- Ставим палетку прямо в игрока с огромной скоростью
-                            pallet.SoundPart.CFrame = tHRP.CFrame
-                            pallet.SoundPart.AssemblyLinearVelocity = Vector3.new(0, 5000, 0) -- Мощный импульс
-                        end
-                    end
-
-                    -- Силовое поле (BodyPosition)
-                    if not kickbp or kickbp.Parent ~= tHRP then
-                        if kickbp then kickbp:Destroy() end
-                        kickbp = Instance.new("BodyPosition")
-                        kickbp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                        kickbp.P = 20000 -- Еще выше жесткость
-                        kickbp.D = 100   -- Меньше демпфирования для резкости
-                        kickbp.Parent = tHRP
-                    end
-                    
-                    if not kickbg or kickbg.Parent ~= tHRP then
-                        if kickbg then kickbg:Destroy() end
-                        kickbg = Instance.new("BodyGyro")
-                        kickbg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-                        kickbg.Parent = tHRP
-                    end
-
-                    -- Удержание на высоте 20 блоков
-                    kickbp.Position = HRP.Position + offsetVec
-                    
-                    -- Анти-фриз: обнуляем скорость цели, чтобы она не "лагала" в воздухе
-                    tHRP.AssemblyLinearVelocity = Vector3.zero
-                end
             end
         end
-        
-        if kickbp then kickbp:Destroy() end
-        if kickbg then kickbg:Destroy() end
     end)
 end
 })
@@ -2150,7 +2068,7 @@ Text = "Loop Kick test",
             if kickbg then kickbg:Destroy() end
         end)
     end
-})
+	})
 TargetGroup:AddToggle("ApplyMethodGrab", {
     Text = "Loop Kik 1",
     Default = false,
