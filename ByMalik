@@ -2,7 +2,7 @@
 # profile-update-interval: 1
 # Date/Time: 2026-07-17 / 14:45 (Moscow)
 # Количество: 150
-# For more info and VPN-configs - visit: www.github.com/igareck/vpn-configs-for-russia
+
 
 vless://16b0d274-3532-4062-9c5b-9f8e4bf176c2@fi.libertynet.pro:8443?type=grpc&security=tls&fp=random&sni=fi.libertynet.pro&serviceName=fi-grpc#%F0%9F%87%AB%F0%9F%87%AE%20Finland%20%7C%20%F0%9F%8C%90%20%7C%20%5BBL%5D
 vless://86393235-4d4a-4fd8-a1de-40b835d71ce4@finland.spectrum.vu:443?security=reality&flow=xtls-rprx-vision&type=raw&sni=finland.spectrum.vu&fp=qq&pbk=7naINgyna0nJ73fMHGStdajWwIrsBk7pxgTKG7QerwY&sid=c8d3e5f1a9b2#%F0%9F%87%AB%F0%9F%87%AE%20Finland%2C%20Helsinki%20%7C%20%5BBL%5D
