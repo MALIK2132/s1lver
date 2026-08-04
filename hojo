@@ -1,23 +1,15 @@
 # profile-title: Infiniti Key v2 Malik
 # profile-update-interval: 1
-# Date/Time: 2026-08-04 / 22:37
-# For more info and VPN-configs - visit: www.github.com/igareck/vpn-configs-for-russia
+# Date/Time: 2026-08-04 / 22:49
+# Описание: Только стабильные VMess (WebSocket) и Trojan. Hysteria полностью удалена.
 
-# 🚀 ТОП СЕРВЕРА (Hysteria2 - Максимальная скорость и низкий пинг)
-hysteria2://71cada65-d23e-418c-88e4-a06188d14689@2.26.85.26:443/?sni=fi-one.quiet-rogue.site#%F0%9F%9A%80%20%231%20%7C%20%D0%A1%D0%B0%D0%BC%D1%8B%D0%B9%20%D0%B1%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9%20%7C%20%F0%9F%87%AB%F0%9F%87%AE%20Finland
-hysteria2://52e3dd44-ed23-4030-b0cc-5b5a953f2d4d@45.145.43.56:8443?headerType=none&encryption=none&sni=speedtestmark.com&insecure=0#%E2%9A%A1%20%232%20%7C%20%D0%A3%D0%BB%D1%8C%D1%82%D1%80%D0%B0%20%D0%B1%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9%20%7C%20%F0%9F%87%A9%F0%9F%87%AA%20Germany
-hysteria2://68b4b16e-2759-47a4-8a69-33118edf5ce6@finlandi.blokinet3.ru:443?sni=finlandi.blokinet3.ru#%E2%9A%A1%20%233%20%7C%20%D0%9E%D1%87%D0%B5%D0%BD%D1%8C%20%D0%B1%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9%20%7C%20%F0%9F%87%B3%F0%9F%87%B1%20Netherlands
-hysteria2://67a1454f-5a95-4e30-9723-1ffcbe7e97f9@wopa5.api3-max.ru:443?security=tls&insecure=0#%E2%9A%A1%20%234%20%7C%20%D0%92%D1%8B%D1%81%D0%BE%D0%BA%D0%B0%D1%8F%20%D1%81%D0%BA%D0%BE%D1%80%D0%BE%D1%81%D1%82%D1%8C%20%7C%20%F0%9F%87%AC%F0%9F%87%A7%20UK
-hysteria2://uj7XGZGUqRlmdpk6rysyZMN333RWsxTFj0hBIMaFV-NUCd5r@ro.h2corp.org:443?insecure=0&sni=ro.h2corp.org#%E2%9A%A1%20%235%20%7C%20%D0%92%D1%8B%D1%81%D0%BE%D0%BA%D0%B0%D1%8F%20%D1%81%D0%BA%D0%BE%D1%80%D0%BE%D1%81%D1%82%D1%8C%20%7C%20%F0%9F%87%B7%F0%9F%87%B4%20Romania
-hysteria2://b7c9e2f1-4d83-42a1-9e5f-sg2026proxy@209.74.81.28:8443/?insecure=1#%E2%9A%A1%20%236%20%7C%20%D0%9E%D1%82%D0%BB%D0%B8%D1%87%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%B8%F0%9F%87%AC%20Singapore
-hysteria2://qIg7TMxfJvx6t27er0c9P0osebAAPu2PYlB_aoWelV5kVVQ2@194.180.174.69:443?sni=fr2.h2corp.org#%E2%9A%A1%20%237%20%7C%20%D0%9E%D1%82%D0%BB%D0%B8%D1%87%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%AB%F0%9F%87%B7%20France
-hysteria2://300f8c21-6341-4503-a5db-c13d331c63c8@hg1.yuanbaojc.site:20801?peer=hg1.yuanbaojc.site&insecure=1&fastopen=1#%E2%9A%A1%20%238%20%7C%20%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9%20%7C%20%F0%9F%87%B0%F0%9F%87%B7%20South%20Korea
-hysteria2://H7mP2xY9kJ4nQ8wR5tF6vB3z@202.146.222.29:443?insecure=1#%E2%9A%A1%20%239%20%7C%20%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9%20%7C%20%F0%9F%87%AD%F0%9F%87%B0%20Hong%20Kong
-hysteria2://VB92_Ka9qwef143K_L23K1hz3_bF_Hz62uT_Bn1_sC@23.95.75.151:8443?sni=hopp-us.yyuyy.com#%E2%9A%A1%20%2310%20%7C%20%D0%A1%D1%82%D0%B0%D0%B1%D0%B8%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%BA%F0%9F%87%B8%20USA
+# 🚀 ТОП СЕРВЕРА (VMess + WebSocket)
+vmess://eyJhZGQiOiIzOC4xMDcuMjM0LjU3IiwiaWQiOiI1NjdmNGJlNS0xMmFiLTQyZTEtYjhkOS1kYjZmZDFmZGQzMWMiLCJwb3J0IjoiODAiLCJzY3kiOiJhdXRvIiwidiI6IjIiLCJuZXQiOiJ3cyIsImhvc3QiOiIiLCJwYXRoIjoiL3ZtZXNzLyIsInRscyI6Im5vbmUiLCJwcyI6IiMxIHwg0KHQsNC80YvQuSDQsdGL0YHRgtGA0YvQuSB8IPCfh7Dwn4e/IEthemFraHN0YW4iLCJhaWQiOiIwIiwidHlwZSI6Im5vbmUiLCJzbmkiOiIiLCJhbHBuIjoiIiwiZnAiOiIifQ==
+vmess://eyJ2IjoiMiIsInBzIjoiIzIgfCDQo9C70YzRgtGA0LAg0LHRi9GB0YLRgNGL0LkgfCDwn4e68J+HuCBVU0EsIExBIiwiYWRkIjoiNjQuMTg2LjI1My4xMTMiLCJwb3J0IjoiMjA5NSIsImlkIjoiM2RmNTRjOTAtNWNjNC00YTcwLTk4ZjctNTIyNDVmMjUyMzBiIiwiYWlkIjoiMCIsInNjeSI6ImF1dG8iLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6IiIsImFscG4iOiIiLCJwYXRoIjoiM2RmNTRjOTAtNWNjNC00YTcwLTk4ZjctNTIyNDVmMjUyMzBiLXZtIiwidGxzIjoiIiwic25pIjoiIiwiZnAiOiIifQ==
 
-# 🛡️ СТАБИЛЬНЫЕ СЕРВЕРА (Trojan & VMess)
-trojan://humanity@185.75.243.102:443?security=tls&sni=www.ignitelimit.com&alpn=h3%2C+h2%2C+http%2F1.1&type=ws&host=www.ignitelimit.com&path=%2Fassignment&fp=chrome#%F0%9F%9B%A1%EF%B8%8F%20%2311%20%7C%20%D0%A1%D1%82%D0%B0%D0%B1%D0%B8%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%AB%F0%9F%87%B7%20France
-trojan://ba07a8af-5544-48ac-ab62-3b6c00a44fa6@oplosgru-c.catcat321.com:20004?security=tls&sni=hk.catxstar.com&type=tcp&fp=chrome#%F0%9F%9B%A1%EF%B8%8F%20%2312%20%7C%20%D0%A1%D1%82%D0%B0%D0%B1%D0%B8%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%AF%F0%9F%87%B5%20Japan
-trojan://M7v%25w11Se%2A@tttyder.wsone.icu:443?security=tls&sni=tttyder.wsone.icu&type=tcp&fp=chrome#%F0%9F%9B%A1%EF%B8%8F%20%2313%20%7C%20%D0%A1%D1%82%D0%B0%D0%B1%D0%B8%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%AE%F0%9F%87%B3%20India
-trojan://S.ibYdZshHTF-ne.M%2B.Fznp_-hyFFnCSix@149.104.104.58:443/?type=tcp&security=tls&sni=149.104.104.58&fp=android#%F0%9F%9B%A1%EF%B8%8F%20%2314%20%7C%20%D0%A1%D1%82%D0%B0%D0%B1%D0%B8%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%B5%F0%9F%87%B0%20Pakistan
-vmess://eyJhZGQiOiIzOC4xMDcuMjM0LjU3IiwiaWQiOiI1NjdmNGJlNS0xMmFiLTQyZTEtYjhkOS1kYjZmZDFmZGQzMWMiLCJwb3J0IjoiODAiLCJzY3kiOiJhdXRvIiwidiI6IjIiLCJuZXQiOiJ3cyIsImhvc3QiOiIiLCJwYXRoIjoiL3ZtZXNzLyIsInRscyI6Im5vbmUiLCJwcyI6IvCfh7Dwn4e/IEthemFraHN0YW4sIEFsbWF0eSB8IFtCTF0iLCJhaWQiOiIwIiwidHlwZSI6Im5vbmUiLCJzbmkiOiIiLCJhbHBuIjoiIiwiZnAiOiIifQ==
+# 🛡️ СТАБИЛЬНЫЕ СЕРВЕРА (Trojan WS & TCP)
+trojan://humanity@185.75.243.102:443?security=tls&sni=www.ignitelimit.com&alpn=h3%2C+h2%2C+http%2F1.1&type=ws&host=www.ignitelimit.com&path=%2Fassignment&fp=chrome#%233%20%7C%20%D0%9E%D1%87%D0%B5%D0%BD%D1%8C%20%D0%B1%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9%20%7C%20%F0%9F%87%AB%F0%9F%87%B7%20France
+trojan://%23RO2PEf%7D%3Cw%27B@81.255.155.10:443?path=%2FeyJqdW5rIjoiNzJHc0NRZUV6QkkiLCJwcm90b2NvbCI6InRyIiwibW9kZSI6InByb3h5aXAiLCJwYW5lbElQcyI6W119%3Fed%3D2560&security=tls&alpn=http%2F1.1&insecure=0&fp=chrome&type=ws&allowInsecure=0&sni=AhMfyq76HFG6Yl-759Lpj03f6luOEr2c.kELArdaSHtt.WoRKerS.Dev#%234%20%7C%20%D0%A1%D1%82%D0%B0%D0%B1%D0%B8%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20WS%20%7C%20%F0%9F%8C%90%20Anycast
+trojan://ba07a8af-5544-48ac-ab62-3b6c00a44fa6@oplosgru-c.catcat321.com:20004?security=tls&sni=hk.catxstar.com&type=tcp&fp=chrome#%235%20%7C%20%D0%92%D1%8B%D1%81%D0%BE%D0%BA%D0%B0%D1%8F%20%D1%81%D0%BA%D0%BE%D1%80%D0%BE%D1%81%D1%82%D1%8C%20%7C%20%F0%9F%87%AF%F0%9F%87%B5%20Japan
+trojan://M7v%25w11Se%2A@tttyder.wsone.icu:443?security=tls&sni=tttyder.wsone.icu&type=tcp&fp=chrome#%236%20%7C%20%D0%9E%D1%82%D0%BB%D0%B8%D1%87%D0%BD%D1%8B%D0%B9%20%7C%20%F0%9F%87%AE%F0%9F%87%B3%20India
+trojan://S.ibYdZshHTF-ne.M%2B.Fznp_-hyFFnCSix@149.104.104.58:443/?type=tcp&security=tls&sni=149.104.104.58&fp=android#%237%20%7C%20%D0%A5%D0%BE%D1%80%D0%BE%D1%88%D0%B8%D0%B9%20%7C%20%F0%9F%87%B5%F0%9F%87%B0%20Pakistan
