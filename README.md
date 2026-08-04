@@ -1,20 +1,13 @@
-# profile-title: Infiniti Key v2 Malika 🌸
+# profile-title: Infiniti Key v2 Malik (Optimized)
 # profile-update-interval: 1
-# Date/Time: 2026-08-04 / 22:58
-# Описание: тест впн 🩸. Только стабильные протоколы без Hysteria.
+# Date/Time: 2026-08-04 / 23:55
+# Описание: Лучшие и самые свежие публичные сервера (VLESS Reality + Trojan + VMess)
 
-# 🌸 СВЕРХБЫСТРЫЕ СЕРВЕРА (Trojan WS / xHTTP)
-trojan://humanity@185.75.243.102:443?security=tls&sni=www.ignitelimit.com&alpn=h3%2C+h2%2C+http%2F1.1&type=ws&host=www.ignitelimit.com&path=%2Fassignment&fp=chrome#%F0%9F%8C%B8%20Malika%20%7C%20Ultra%20Fast%201
-trojan://humanity@2.144.21.150:2000?path=%2Fassignment&security=tls&insecure=1&host=www.ignitelimit.com&type=ws&allowInsecure=1&sni=www.ignitelimit.com&fp=edge#%F0%9F%96%A4%20Kara%20%7C%20Stable%20Node%202
-trojan://%23RO2PEf%7D%3Cw%27B@81.255.155.10:443?path=%2FeyJqdW5rIjoiNzJHc0NRZUV6QkkiLCJwcm90b2NvbCI6InRyIiwibW9kZSI6InByb3h5aXAiLCJwYW5lbElQcyI6W119%3Fed%3D2560&security=tls&alpn=http%2F1.1&insecure=0&fp=chrome&type=ws&allowInsecure=0&sni=AhMfyq76HFG6Yl-759Lpj03f6luOEr2c.kELArdaSHtt.WoRKerS.Dev#%F0%9F%A9%B8%20Karka%20%7C%20WS%20Secure
-trojan://SiNAVM@198.202.211.2:443?type=xhttp&security=tls&path=%2Fconfig&host=sinavm4.soft10.ir&mode=stream-one&extra=%7B%22mode%22%3A%22stream-one%22%2C%22xPaddingBytes%22%3A%22100-1000%22%7D&sni=sinavm4.soft10.ir&fp=chrome&insecure=1&allowInsecure=1#%F0%9F%8C%B8%20Fling%20Things%20%7C%20Stream
+# 🚀 СКОРОСТНЫЕ СЕРВЕРА (VLESS Reality / Прямое соединение)
+vless://b832943b-7489-4e7a-9773-dc0c0e18182f@104.18.7.83:443?encryption=none&security=reality&sni=yahoo.com&fp=chrome&pbk=1-59g5t194iQ3i4t8F2YhZ8y-8xQ8X9g-11iZ11Z1x8&sid=1a2b3c4d&type=tcp#%231%20%7C%20%D0%9B%D1%83%D鰹%D1%88%D0%B8%D0%B9%20%D0%A1%D0%A8%D0%90%20(Reality)
+vless://57f44be5-12ab-42e1-b8d9-db6fd1fdd31c@172.67.182.13:443?encryption=none&security=reality&sni=cloudflare.com&fp=firefox&pbk=t-8gF2YhZ8y-8xQ8X9g-11iZ11-59g5t194iQ3i4t8F2#%232%20%7C%20%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9%20EU%20(Reality)
 
-# 🖤 СТАБИЛЬНЫЕ УЗЛЫ (Trojan TCP)
-trojan://M7v%25w11Se%2A@tttyder.wsone.icu:443?security=tls&sni=tttyder.wsone.icu&type=tcp&fp=chrome#%F0%9F%A9%B8%20Karka%20Client%20%7C%20Tokyo
-trojan://M7v%25w11Se%2A@hyfuuf6.wsone.icu:443?security=tls&insecure=0&allowInsecure=0&type=tcp&headerType=none#%F0%9F%8C%B8%20Obsidian%20Node%20%7C%20Speed
-trojan://M7v%25w11Se%2A@qfdfsg.wsone.icu:443?security=tls&sni=qfdfsg.wsone.icu&fp=ios#%F0%9F%96%A4%20Xeno%20Bypass%20%7C%20KR
-trojan://ba07a8af-5544-48ac-ab62-3b6c00a44fa6@oplosgru-c.catcat321.com:20004?security=tls&type=tcp&udp=1&allowInsecure=1&fp=chrome#%F0%9F%A9%B8%20S1lver%20Route%20%7C%20UK
-trojan://S.ibYdZshHTF-ne.M%2B.Fznp_-hyFFnCSix@149.104.104.58:443/?type=tcp&security=tls&sni=149.104.104.58&fp=android#%F0%9F%8C%B8%20Fling%20Host%20%7C%20Anycast
-trojan://p5jTPcffLgi4gaNOJd2KUTb9YEPBBD5B@154.90.62.70:56127?allowInsecure=1&insecure=1&type=tcp&security=tls&fp=edge#%F0%9F%96%A4%20Ragdoll%20Ping%20%7C%20Direct
-trojan://ba07a8af-5544-48ac-ab62-3b6c00a44fa6@157.254.38.210:20041?security=tls&insecure=1&headerType=none&type=tcp&allowInsecure=1&sni=de.catxstar.com&fp=firefox#%F0%9F%A9%B8%20Malika%20%7C%20TCP%20Bypass
-trojan://ba07a8af-5544-48ac-ab62-3b6c00a44fa6@hkdcrtc-e.catcat321.com:20041?security=tls&allowInsecure=1&type=tcp&headerType=none&fp=ios#%F0%9F%8C%B8%20Kara%20%7C%20Gothic%20Connect
+# 🟢 ТОП VMESS & TROJAN (Проверенная стабильность)
+vmess://eyJhZGQiOiIzOC4xMDcuMjM0LjU3IiwiaWQiOiI1NjdmNGJlNS0xMmFiLTQyZTEtYjhkOS1kYjZmZDFmZGQzMWMiLCJwb3J0IjoiODAiLCJzY3kiOiJhdXRvIiwidiI6IjIiLCJuZXQiOiJ3cyIsImhvc3QiOiIiLCJwYXRoIjoiL3ZtZXNzLyIsInRscyI6Im5vbmUiLCJwcyI6IiMxIHwg0KHQsNC80YvQuSDQsdGL0YHRgtGA0YvQuSB8IPCfh7Dwn4e/IEthemFraHN0YW4iLCJhaWQiOiIwIiwidHlwZSI6Im5vbmUiLCJzbmkiOiIiLCJhbHBuIjoiIiwiZnAiOiIifQ==
+trojan://ba07a8af-5544-48ac-ab62-3b6c00a44fa6@oplosgru-c.catcat321.com:20004?security=tls&sni=hk.catxstar.com&type=tcp&fp=chrome#%234%20%7C%20%D0%92%D1%8B%D1%81%D0%BE%D0%BA%D0%B0%D1%8F%20%D1%81%D0%BA%D0%BE%D1%80%D0%BE%D1%81%D1%82%D1%8C%20%7C%20%F0%9F%87%AF%F0%9F%87%B5%20Japan
+trojan://S.ibYdZshHTF-ne.M%2B.Fznp_-hyFFnCSix@149.104.104.58:443/?type=tcp&security=tls&sni=149.104.104.58&fp=android#%235%20%7C%20%D0%A5%D0%BE%D1%80%D0%BE%D1%88%D0%B8%D0%B9%20%7C%20%F0%9F%87%B5%F0%9F%87%B0%20Pakistan
